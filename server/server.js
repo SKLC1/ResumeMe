@@ -5,7 +5,6 @@ import { resumeRouter } from './routes/resume.js'
 import cors from 'cors'
 import bodyParser from 'body-parser';
 
-
 dotenv.config()
 
 const app = express();
