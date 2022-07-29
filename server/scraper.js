@@ -1,5 +1,7 @@
 import PuppeteerExtra from 'puppeteer-extra'
 import stealthPlugin from 'puppeteer-extra-plugin-stealth'
+import html2json from 'html2json'
+import fs from 'fs'
 
 async function scrapeProfile(urlObj){
   const bot = {email: "tamirgalim@gmail.com",password: "asdfasdf12345"};
@@ -20,15 +22,22 @@ async function scrapeProfile(urlObj){
   await page.click(".btn__primary--large")
   await page.waitForTimeout(4000);
   // get data from user
+  const resume = {};
   await page.goto(`${urlObj.profileLink}`)
-    // browser.close();
+  await page.waitForTimeout(1000);
+  const data = await page.evaluate(() => document.querySelector('body').outerHTML);
+  const profileJson = html2json.html2json(data)
+  console.log(profileJson);  
+  fs.writeFileSync('data.json', JSON.stringify(profileJson, null, 2))
+  
+  // browser.close();
     console.log('scraped');
     return 'scraped'
-    
+
   } catch (error) {
     throw error
   }
 }
-// scrapeProfile({profileLink: 'https://www.linkedin.com/in/ari-wolf/'})
+scrapeProfile({profileLink: 'https://www.linkedin.com/in/ari-wolf/'})
 
 export default scrapeProfile
