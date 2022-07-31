@@ -7,35 +7,38 @@ const user1 = {email: "tamirgalim@gmail.com",password: "asdfasdf12345"};
 const user2 = {email: "ukd5880@gmail.com",password: ")x-B=MV_X%dtw3="};
 const user3 = {email: "davidglaritz@gmail.com",password: "David5101!"};
 
+
 //crawler config
 const keyword1 = 'hiring';
 const threshold = 30;
-// const config = { keyword1, threshold, scrollCountParameter};
-const configEx = { keywords: ['hiring'], threshold: 30, scrollCountParameter: 13};
+// const config = { keyword1, threshold, scrollCount};
+const configEx = { keywords: ['hiring'], threshold: 30, scrollCount: 9};
 
-async function scrapePosts(){
-  let data = [];
+async function scrapePosts(userConfig){
+  let data = []; 
   let done = false;
-
+  
   async function openLinkedIn(bot,config) {
-    PuppeteerExtra.use(stealthPlugin())
-    const browser = await PuppeteerExtra.launch({headless: false});
+    
+  try {
+  PuppeteerExtra.use(stealthPlugin())
+  const browser = await PuppeteerExtra.launch({headless: false});
   const page = await browser.newPage();
   await page.goto('https://www.linkedin.com/')
   // login
   await page.click(".nav__button-secondary")
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1000 + randomWait());
   await page.type("#username",bot.email,{delay: 15})
   await page.type("#password",bot.password,{delay: 15})
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1000 + randomWait());
   await page.click(".btn__primary--large")
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(5000 + randomWait());
   // search for desired title
   page.waitForSelector('.search-global-typeahead__input', {visible: true})
   await page.type(".search-global-typeahead__input",`${keyword1}`,{delay: 15})
   await page.keyboard.press('Enter');
   //filter by posts
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(4000 + randomWait());
   page.waitForSelector("#search-reusables__filters-bar > ul > li", {visible: true})
   const buttons = await page.$$("#search-reusables__filters-bar > ul > li")
   for (const li of buttons) {
@@ -44,7 +47,7 @@ async function scrapePosts(){
       await li.click()
     }
   }
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2000 + randomWait());
   // //! filter by past week
   // page.waitForSelector('[aria-label="Date posted filter. Clicking this button displays all Date posted filter options."]', {visible: true})
   // await page.click('[aria-label="Date posted filter. Clicking this button displays all Date posted filter options."]')
@@ -55,10 +58,14 @@ async function scrapePosts(){
   // //? only this line doesn't work
   // await page.$eval(`[aria-label="Apply current filter to show results"]`, element => element.click())
   
-  await captureResponse(page,browser,config.scrollCountParameter)
+  await captureResponse(page,browser,config)
+    
+  } catch (error) {
+     throw error  
+  }
 }
 
-async function captureResponse(page,browser,scrollCount){
+async function captureResponse(page,browser,config){
   
   await page.on('response', async (response)=> {    
     if (response.url().includes('SearchClusterCollection')){
@@ -71,10 +78,10 @@ async function captureResponse(page,browser,scrollCount){
       }
     } 
   }); 
-  for (let i = 0; i <= scrollCount; i++) {
+  for (let i = 0; i <= config.scrollCount; i++) {
     await page.waitForTimeout(3000);
     loadMoreData(page)
-    if(i + 1> scrollCount){
+    if(i + 1> config.scrollCount){
       //create end function 
       returnDataOnEnd(data)
     }
@@ -154,6 +161,12 @@ function convertURNtoLink(arrOfURN){
 
  await waitUntil(() => done)
  return data
+}
+
+function randomWait(){
+  const random = Math.random() * (2000 - 500) + 500;
+  console.log(random);
+  return random
 }
 
 export default scrapePosts
