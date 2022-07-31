@@ -10,13 +10,14 @@ const user3 = {email: "davidglaritz@gmail.com",password: "David5101!"};
 //crawler config
 const keyword1 = 'hiring';
 const threshold = 30;
-const config = { keyword1, threshold};
+// const config = { keyword1, threshold, scrollCountParameter};
+const configEx = { keywords: ['hiring'], threshold: 30, scrollCountParameter: 13};
 
 async function scrapePosts(){
   let data = [];
   let done = false;
 
-  async function openLinkedIn(bot,scrollCountParameter) {
+  async function openLinkedIn(bot,config) {
     PuppeteerExtra.use(stealthPlugin())
     const browser = await PuppeteerExtra.launch({headless: false});
   const page = await browser.newPage();
@@ -28,7 +29,7 @@ async function scrapePosts(){
   await page.type("#password",bot.password,{delay: 15})
   await page.waitForTimeout(1000);
   await page.click(".btn__primary--large")
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(5000);
   // search for desired title
   page.waitForSelector('.search-global-typeahead__input', {visible: true})
   await page.type(".search-global-typeahead__input",`${keyword1}`,{delay: 15})
@@ -54,8 +55,7 @@ async function scrapePosts(){
   // //? only this line doesn't work
   // await page.$eval(`[aria-label="Apply current filter to show results"]`, element => element.click())
   
-  const scrollCount = scrollCountParameter;
-  await captureResponse(page,browser,scrollCount)
+  await captureResponse(page,browser,config.scrollCountParameter)
 }
 
 async function captureResponse(page,browser,scrollCount){
@@ -131,13 +131,13 @@ function convertURNtoLink(arrOfURN){
     console.log('ACCEPTED LINKS:');
     console.log(links);
     data = data.concat(links);
-    // console.log(data);
+    console.log(data);
   } else {
     console.log('no accepted posts');
   }
 }
   
- openLinkedIn(user1, 6)
+ openLinkedIn(user1, configEx)
 
   const waitUntil = (condition) => {
    return new Promise((resolve) => {
