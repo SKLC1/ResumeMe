@@ -13,8 +13,7 @@ const threshold = 30;
 const config = { keyword1, threshold};
 
 async function scrapePosts(){
-  let data = [];
-  let done = false;
+  let data = []
 
   async function openLinkedIn(bot,scrollCountParameter) {
     PuppeteerExtra.use(stealthPlugin())
@@ -55,7 +54,7 @@ async function scrapePosts(){
   // await page.$eval(`[aria-label="Apply current filter to show results"]`, element => element.click())
   
   const scrollCount = scrollCountParameter;
-  await captureResponse(page,browser,scrollCount)
+  captureResponse(page,browser,scrollCount)
 }
 
 async function captureResponse(page,browser,scrollCount){
@@ -74,17 +73,28 @@ async function captureResponse(page,browser,scrollCount){
   for (let i = 0; i <= scrollCount; i++) {
     await page.waitForTimeout(3000);
     loadMoreData(page)
-    if(i + 1> scrollCount){
+    if(i +1> scrollCount){
       //create end function 
-      returnDataOnEnd(data)
+      returnDataOnEnd()
     }
   }
 }
 
 async function returnDataOnEnd(){
   console.log('SCRAPING COMPLETE');
-  console.log(data);
-  done = true;
+  const data = JSON.parse(fs.readFileSync('data.json'));
+  console.log(`FINAL RES: ${data}`);
+  await removeDataJSONfile()
+  return data
+}
+
+async function removeDataJSONfile(){
+  fs.unlink('./data.json', (err) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+  })
 }
 
 async function loadMoreData(page){
@@ -130,8 +140,16 @@ function convertURNtoLink(arrOfURN){
     })
     console.log('ACCEPTED LINKS:');
     console.log(links);
-    data = data.concat(links);
-    // console.log(data);
+    //test
+    data.push(links)
+    //
+    if(fs.existsSync('./data.json')){
+      const fileData = JSON.parse(fs.readFileSync('data.json'));
+      const joinedData = fileData.concat(links);
+      fs.writeFileSync('data.json', JSON.stringify(joinedData, null, 2))
+    } else {
+      fs.writeFileSync('data.json', JSON.stringify(links, null, 2))
+    }
   } else {
     console.log('no accepted posts');
   }
@@ -139,21 +157,6 @@ function convertURNtoLink(arrOfURN){
   
  openLinkedIn(user1, 6)
 
-  const waitUntil = (condition) => {
-   return new Promise((resolve) => {
-      let interval = setInterval(() => {
-          if (!condition()) {
-            return
-          }
-
-          clearInterval(interval)
-          resolve()
-      }, 100)
-   })
-  }
-
- await waitUntil(() => done)
- return data
 }
 
 export default scrapePosts
