@@ -11,7 +11,7 @@ const user3 = {email: "davidglaritz@gmail.com",password: "David5101!"};
 //crawler config
 const configEx = { keywords: ['cyber'], threshold: 30, scrollCount: 9};
 
-async function scrapePosts(userConfig){
+async function scrapePosts(bot, userConfig){
   let data = []; 
   let done = false;
   
@@ -141,7 +141,7 @@ function convertURNtoLink(arrOfURN){
   }
 }
   
- openLinkedIn(user1, configEx)
+ openLinkedIn(user1, userConfig)
 
   const waitUntil = (condition) => {
    return new Promise((resolve) => {
