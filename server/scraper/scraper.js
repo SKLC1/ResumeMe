@@ -9,16 +9,13 @@ const user3 = {email: "davidglaritz@gmail.com",password: "David5101!"};
 
 
 //crawler config
-const keyword1 = 'hiring';
-const threshold = 30;
-// const config = { keyword1, threshold, scrollCount};
-const configEx = { keywords: ['hiring'], threshold: 30, scrollCount: 9};
+const configEx = { keywords: ['cyber'], threshold: 30, scrollCount: 9};
 
 async function scrapePosts(userConfig){
   let data = []; 
   let done = false;
   
-  async function openLinkedIn(bot,config) {
+  async function openLinkedIn(bot, config) {
     
   try {
   PuppeteerExtra.use(stealthPlugin())
@@ -35,7 +32,7 @@ async function scrapePosts(userConfig){
   await page.waitForTimeout(5000 + randomWait());
   // search for desired title
   page.waitForSelector('.search-global-typeahead__input', {visible: true})
-  await page.type(".search-global-typeahead__input",`${keyword1}`,{delay: 15})
+  await page.type(".search-global-typeahead__input",`${config.keywords[0]}`,{delay: 15})
   await page.keyboard.press('Enter');
   //filter by posts
   await page.waitForTimeout(4000 + randomWait());
@@ -72,7 +69,7 @@ async function captureResponse(page,browser,config){
       console.log("response code: ", response.status());
       const data = await response.json();
       if(response.status() === 200){
-        getRelevantPostURN(data)
+        getRelevantPostURN(data, config)
       } else {
         console.log('error while getting data');
       }
@@ -110,7 +107,7 @@ async function loadMoreData(page){
   }));
 }
 
-function getRelevantPostURN(data){
+function getRelevantPostURN(data, config){
   const all_posts = data.included;
   const relevant_posts = []
   const accepted_posts_refs = []
@@ -120,7 +117,7 @@ function getRelevantPostURN(data){
     } 
   })
   relevant_posts.forEach((post)=>{
-    if(post.numLikes >= 30){
+    if(post.numLikes >= config.threshold){
       accepted_posts_refs.push(post.entityUrn)
     }
   })
