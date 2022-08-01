@@ -15,8 +15,8 @@ async function scrapePosts(bot, userConfig){
   let data = []; 
   let done = false;
   
-  async function openLinkedIn(bot, config) {
-    
+  async function openLinkedIn(bot, { config }) {
+    console.log(config);
   try {
   PuppeteerExtra.use(stealthPlugin())
   const browser = await PuppeteerExtra.launch({headless: false});

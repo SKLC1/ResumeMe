@@ -1,25 +1,18 @@
 import { Autocomplete, Button, Chip, TextField, Typography } from '@mui/material';
 import Slider from '@mui/material/Slider';
-import axios from 'axios';
 import { useState } from 'react';
 
 
-function ScraperInput() {
-  const [keywords, setKeywords] = useState([])
-  const [threshold, setThreshold] = useState(0)
-  const [scrollCount, setScrollCount] = useState(0)
-  
-  
-  async function getScrapedData(){
-    const baseURL = "http://localhost:5000" 
-    const {data} = axios.post({baseURL} + '/resume/scrape')
-    console.log(data);
-  }
+function ScraperInput({getScrapedData}) {
 
+  const [keywords, setKeywords] = useState(['hiring'])
+  const [threshold, setThreshold] = useState(30)
+  const [scrollCount, setScrollCount] = useState(10)
+  
 
   return ( 
     <>
-    <div className='input-container'>
+    <div className='container'>
      <div className='input-wrapper'>
      <Typography id="input-slider" gutterBottom>
         Keywords
@@ -47,11 +40,11 @@ function ScraperInput() {
       <Typography id="input-slider" gutterBottom>
         Like Threshold
       </Typography>
-      <Slider defaultValue={0} onChange={(e)=>setThreshold(e.target.value)} valueLabelDisplay="auto"  />
+      <Slider defaultValue={30} onChange={(e)=>setThreshold(e.target.value)} valueLabelDisplay="auto"  />
       <Typography id="input-slider" gutterBottom>
         Search Size
       </Typography>
-      <Slider defaultValue={0} max={30} onChange={(e)=>setScrollCount(e.target.value)} valueLabelDisplay="auto"  />
+      <Slider defaultValue={10} max={30} onChange={(e)=>setScrollCount(e.target.value)} valueLabelDisplay="auto"  />
       <div className='display-config'>
        <ul>Keywords: {keywords.length === 0?
        <div>None</div>:
@@ -60,7 +53,7 @@ function ScraperInput() {
        <div>Like Threshold: {threshold}</div>
        <div>Search Size: {scrollCount}</div>
       </div>
-     <Button onClick={getScrapedData}>Generate</Button>
+     <Button onClick={()=>getScrapedData({keywords,threshold,scrollCount})}>Generate</Button>
      </div>
     </div>
     </>
