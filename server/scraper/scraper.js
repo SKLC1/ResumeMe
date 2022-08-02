@@ -66,7 +66,7 @@ async function captureResponse(page,browser,config){
   
   await page.on('response', async (response)=> {    
     if (response.url().includes('SearchClusterCollection')){
-      console.log("response code: ", response.status());
+      // console.log("response code: ", response.status());
       const data = await response.json();
       if(response.status() === 200){
         getRelevantPostURN(data, config)
@@ -74,19 +74,19 @@ async function captureResponse(page,browser,config){
         console.log('error while getting data');
       }
     } 
-  }); 
-    if(data.length < config.scrollCount){
-    await page.waitForTimeout(3000);
-    loadMoreData(page)
-      captureResponse(page,browser,config)
-    } else {
+  });
+  for (let i = 0; i <= config.scrollCount; i++) {
+      await page.waitForTimeout(3000);
+      loadMoreData(page)
+    if(data.length - 1 > config.scrollCount){
       returnDataOnEnd(data)
     }
+  }
+
 }
 
 async function returnDataOnEnd(){
   console.log('SCRAPING COMPLETE');
-  console.log(data);
   done = true;
 }
 
@@ -117,29 +117,28 @@ function getRelevantPostURN(data, config){
   })
   relevant_posts.forEach((post)=>{
     if(post.numLikes >= config.threshold){
-      accepted_posts_refs.push(post.entityUrn)
+      accepted_posts_refs.push({urn: post.entityUrn, numLikes: post.numLikes})
     }
   })
   convertURNtoLink(accepted_posts_refs)
-  console.log(`${accepted_posts_refs.length} posts accepted out of ${relevant_posts.length} relevant posts`);
+  // console.log(`${accepted_posts_refs.length} posts accepted out of ${relevant_posts.length} relevant posts`);
 }
 
 function convertURNtoLink(arrOfURN){
   const baseURL = 'https://www.linkedin.com/feed/update/';
   if(arrOfURN.length > 0 ){
-    const links = arrOfURN.map(urn=>{
-      const relevantURN = urn.split('Counts:')
-      return `${baseURL}${relevantURN[1]}` 
+    const links = arrOfURN.map(postObj =>{
+      const relevantURN = postObj.urn.split('Counts:')
+      return {url:`${baseURL}${relevantURN[1]}`, numLikes: postObj.numLikes }
     })
-    console.log('ACCEPTED LINKS:');
-    console.log(links);
+    // console.log('ACCEPTED LINKS:');
+    // console.log(links);
     data = data.concat(links);
   } else {
-    console.log('no accepted posts');
+    console.log('no relevant posts found') 
   }
 }
 
-  
  openLinkedIn(user1, userConfig)
 
   const waitUntil = (condition) => {

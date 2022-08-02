@@ -1,3 +1,4 @@
+import Link from "./Link";
 
 
 function ScraperResults({links}) {
@@ -6,7 +7,7 @@ function ScraperResults({links}) {
   
     function renderLinks(){
       return links.map((link,idx)=>{
-        return <a href={link}>POST {idx}</a>
+        return <Link link={link} idx={idx} key={idx}/>
       })
     }
     function NoLinks(){
