@@ -5,7 +5,7 @@ function ScraperResults({links}) {
   
     function renderLinks(posts){
       return posts.map((link,idx)=>{
-        return <Link className="link" link={link} idx={idx} key={idx}/>
+        return <Link link={link} idx={idx} key={idx}/>
       })
     }
     

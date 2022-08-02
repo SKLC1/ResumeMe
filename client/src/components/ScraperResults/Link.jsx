@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 function Link({link,idx}) {
   return ( 
     <>
-    <div className="container-row">
+    <div className="container-row link" >
       <h4>
       <a href={link.url}>POST {idx + 1}</a>
       </h4>
