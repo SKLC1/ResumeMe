@@ -7,6 +7,7 @@ import { DotLoader } from "react-spinners"
 function App() {
   const [scraperRes, setScraperRes] = useState([])
   const [loading, setLoading] = useState(false)
+  
 
   async function getScrapedData(config){
     const baseURL = "http://localhost:5000" 

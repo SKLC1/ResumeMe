@@ -14,6 +14,7 @@ const configEx = { keywords: ['cyber'], threshold: 30, scrollCount: 9};
 async function scrapePosts(bot, userConfig){
   let data = []; 
   let done = false;
+  const desiredAmountOfLinks = userConfig.config.scrollCount
   
   async function openLinkedIn(bot, { config }) {
     console.log(config);
@@ -75,11 +76,12 @@ async function captureResponse(page,browser,config){
       }
     } 
   });
-  for (let i = 0; i <= config.scrollCount; i++) {
+  for (let i = 0; i <= 15; i++) {
       await page.waitForTimeout(3000);
-      loadMoreData(page)
-    if(data.length - 1 > config.scrollCount){
+      await loadMoreData(page)
+    if(data.length > config.scrollCount){
       returnDataOnEnd(data)
+      return;
     }
   }
 
@@ -121,7 +123,7 @@ function getRelevantPostURN(data, config){
     }
   })
   convertURNtoLink(accepted_posts_refs)
-  // console.log(`${accepted_posts_refs.length} posts accepted out of ${relevant_posts.length} relevant posts`);
+  console.log(`${accepted_posts_refs.length} posts accepted out of ${relevant_posts.length} relevant posts`);
 }
 
 function convertURNtoLink(arrOfURN){
@@ -155,7 +157,9 @@ function convertURNtoLink(arrOfURN){
   }
 
  await waitUntil(() => done)
- return data
+ console.log(data.length);
+ console.log(desiredAmountOfLinks);
+ return data.slice(0, desiredAmountOfLinks)
 }
 
 function randomWait(){
