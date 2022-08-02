@@ -75,14 +75,13 @@ async function captureResponse(page,browser,config){
       }
     } 
   }); 
-  for (let i = 0; i <= config.scrollCount; i++) {
+    if(data.length < config.scrollCount){
     await page.waitForTimeout(3000);
     loadMoreData(page)
-    if(i + 1> config.scrollCount){
-      //create end function 
+      captureResponse(page,browser,config)
+    } else {
       returnDataOnEnd(data)
     }
-  }
 }
 
 async function returnDataOnEnd(){
@@ -135,11 +134,11 @@ function convertURNtoLink(arrOfURN){
     console.log('ACCEPTED LINKS:');
     console.log(links);
     data = data.concat(links);
-    console.log(data);
   } else {
     console.log('no accepted posts');
   }
 }
+
   
  openLinkedIn(user1, userConfig)
 

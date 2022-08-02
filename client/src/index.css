@@ -21,6 +21,7 @@ code {
 }
 
 .input-wrapper{
+  margin: 2rem;
   width: 30vw;
   border-radius: 15px;
   border: solid;
