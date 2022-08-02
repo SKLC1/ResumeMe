@@ -157,8 +157,6 @@ function convertURNtoLink(arrOfURN){
   }
 
  await waitUntil(() => done)
- console.log(data.length);
- console.log(desiredAmountOfLinks);
  return data.slice(0, desiredAmountOfLinks)
 }
 

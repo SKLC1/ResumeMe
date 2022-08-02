@@ -33,3 +33,8 @@ code {
   border: solid;
   padding: 2rem;
 }
+
+.link{
+  border-radius: 20px;
+  border: solid;
+}
