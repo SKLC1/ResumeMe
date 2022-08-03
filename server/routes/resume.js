@@ -10,7 +10,7 @@ resumeRouter.post('/scrape', async (req,res)=>{
     const keywords = req.body.config.keywords
     const scrapeResult = []
     for (let i = 0; i < keywords.length; i++) { 
-      const resForKeyword = await scrapePosts({email: "tamirgalim@gmail.com",password: "asdfasdf12345"}, req.body)
+      const resForKeyword = await scrapePosts({email: "tamirgalim@gmail.com",password: "asdfasdf12345"}, req.body, i)
       scrapeResult.push({keyword: keywords[i], data: resForKeyword})
     }
     console.log(`SCRAPE RES: ${scrapeResult}`);

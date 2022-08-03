@@ -8,15 +8,12 @@ const user2 = {email: "ukd5880@gmail.com",password: ")x-B=MV_X%dtw3="};
 const user3 = {email: "davidglaritz@gmail.com",password: "David5101!"};
 
 
-//crawler config
-const configEx = { keywords: ['cyber'], threshold: 30, scrollCount: 9};
-
-async function scrapePosts(bot, userConfig){
+async function scrapePosts(bot, userConfig, iteration){
   let data = []; 
   let done = false;
   const desiredAmountOfLinks = userConfig.config.scrollCount
   
-  async function openLinkedIn(bot, { config }) {
+  async function openLinkedIn(bot, { config }, category) {
     console.log(config);
   try {
   PuppeteerExtra.use(stealthPlugin())
@@ -33,7 +30,7 @@ async function scrapePosts(bot, userConfig){
   await page.waitForTimeout(5000 + randomWait());
   // search for desired title
   page.waitForSelector('.search-global-typeahead__input', {visible: true})
-  await page.type(".search-global-typeahead__input",`${config.keywords[0]}`,{delay: 15})
+  await page.type(".search-global-typeahead__input",`${config.keywords[iteration]}`,{delay: 15})
   await page.keyboard.press('Enter');
   //filter by posts
   await page.waitForTimeout(4000 + randomWait());
@@ -41,7 +38,7 @@ async function scrapePosts(bot, userConfig){
   const buttons = await page.$$("#search-reusables__filters-bar > ul > li")
   for (const li of buttons) {
     let value = await page.evaluate(el => el.textContent, li)
-    if(value.includes("Posts")){
+    if(value.includes(category)){
       await li.click()
     }
   }
@@ -141,7 +138,7 @@ function convertURNtoLink(arrOfURN){
   }
 }
 
- openLinkedIn(user1, userConfig)
+ openLinkedIn(user1, userConfig, "Posts")
 
   const waitUntil = (condition) => {
    return new Promise((resolve) => {

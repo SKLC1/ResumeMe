@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 
 function ScraperInput({getScrapedData}) {
-  const [keywords, setKeywords] = useState(['hiring'])
+  const [keywords, setKeywords] = useState(['hiring','cyber','hiring cyber'])
   const [threshold, setThreshold] = useState(30)
   const [scrollCount, setScrollCount] = useState(10)
   
