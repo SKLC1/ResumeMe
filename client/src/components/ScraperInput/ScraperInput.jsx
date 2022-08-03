@@ -4,12 +4,10 @@ import { useState } from 'react';
 
 
 function ScraperInput({getScrapedData}) {
-
   const [keywords, setKeywords] = useState(['hiring'])
   const [threshold, setThreshold] = useState(30)
   const [scrollCount, setScrollCount] = useState(10)
   
-
   return ( 
     <>
     <div className='container'>
@@ -20,7 +18,7 @@ function ScraperInput({getScrapedData}) {
      <Autocomplete
         multiple
         id="tags-filled"
-        options={keywords}
+        options={keywords.map((option) => option)}
         defaultValue={keywords}
         freeSolo
         renderTags={(value, getTagProps) =>

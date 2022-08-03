@@ -131,7 +131,7 @@ function convertURNtoLink(arrOfURN){
   if(arrOfURN.length > 0 ){
     const links = arrOfURN.map(postObj =>{
       const relevantURN = postObj.urn.split('Counts:')
-      return {url:`${baseURL}${relevantURN[1]}`, numLikes: postObj.numLikes }
+      return {url:`${baseURL}${relevantURN[1]}`, numLikes: postObj.numLikes ,saved: false}
     })
     // console.log('ACCEPTED LINKS:');
     // console.log(links);
