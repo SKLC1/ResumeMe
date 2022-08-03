@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Chip, TextField, Typography } from '@mui/material';
+import { Button, Chip, TextField, Typography } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import { useState } from 'react';
 
@@ -8,6 +8,27 @@ function ScraperInput({getScrapedData}) {
   const [threshold, setThreshold] = useState(30)
   const [scrollCount, setScrollCount] = useState(10)
   
+  function handleDelete(value){
+    console.log(value);
+    const newKeywords = keywords.filter(e=> e !== value)
+    console.log(newKeywords);
+    setKeywords(newKeywords)
+  }
+
+  function addTags(e){
+    if(e.key === "Enter"){
+      setKeywords([...keywords, e.target.value])
+    } 
+  }
+ 
+  function renderTags(){
+    return keywords.map((tag,idx)=>{
+      return (
+        <Chip label={tag} onDelete={()=>handleDelete(tag)}/>
+      )
+    })
+  }
+
   return ( 
     <>
     <div className='container'>
@@ -15,26 +36,12 @@ function ScraperInput({getScrapedData}) {
      <Typography id="input-slider" gutterBottom>
         Keywords
       </Typography>
-     <Autocomplete
-        multiple
-        id="tags-filled"
-        options={keywords.map((option) => option)}
-        defaultValue={keywords}
-        freeSolo
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-            ))
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="filled"
-            label="Keywords"
-            placeholder="Add Keyword"
-          />
-        )}
-      />
+       <div className='tag-input'>
+        <ul>
+          {renderTags()}
+        </ul>
+        <input onKeyUp={(e)=>addTags(e)} placeholder='Add tag'/>
+       </div>
       <Typography id="input-slider" gutterBottom>
         Like Threshold
       </Typography>

@@ -22,7 +22,6 @@ function ScraperResults({links}) {
         return(
           <>
             <div>
-              {renderSavedLinks()}
              <h3>
               Result for "{postObj.keyword}"
              </h3>
@@ -37,7 +36,7 @@ function ScraperResults({links}) {
     
     function renderSavedLinks(){
       return savedLinks.map((linkObj)=>{
-        return <div>{linkObj.url}</div>
+        return <div><a href="{linkObj.url}">Saved Post ({linkObj.numLikes} Reactions)</a></div>
       })
 
     }
